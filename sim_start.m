@@ -3,43 +3,87 @@ function sim_start
 % simulation example for use of cloud dispersion model
 %
 % Arthur Richards, Nov 2014
+% Modified for parameter configuration
 %
 
-%% Simulation state
+%% Load parameters if they exist
 
-% time and time step
-t = 0;
-dt = 1.0;
-
-% The minimum distance at which a pair of UAVs may be without crashing into
-% each other
-uavCrashRadius = 15.0;
-% The minimum distance apart at which all UAVs start
-initialUavSpacing = 50.0;
-
-% The probability that a given UAV's battery life is not full, causing it
-% to run out at a random point in the simulation
-uavBatteryFailProb = 0.1;
-
-
-%% Drawing flags
-
-% Must be set true for anything to be drawn
-drawAny = true;
-% Draw the cloud
-drawCloud = false;
-% Draw the UAVs
-drawUavs = true;
-% Draw control info used by the AIs
-drawAI = false;
-% Draws the pheremones used by AIs - EXTREMELY performance intensive
-drawAIExtra = false;
+% Check if parameter file exists
+if exist('simulation_parameters.mat', 'file')
+    % Load parameters from file
+    params = load('simulation_parameters.mat');
+    
+    % Time and time step
+    t = 0;
+    dt = params.dt;
+    
+    % UAV parameters
+    uavCrashRadius = params.uavCrashRadius;
+    initialUavSpacing = params.initialUavSpacing;
+    uavBatteryFailProb = params.uavBatteryFailProb;
+    
+    % Drawing flags
+    drawAny = params.drawAny;
+    drawCloud = params.drawCloud;
+    drawUavs = params.drawUavs;
+    drawAI = params.drawAI;
+    drawAIExtra = params.drawAIExtra;
+    
+    % Cloud data
+    cloudFile = params.cloudFile;
+    
+    % Number of UAVs
+    uavCount = params.uavCount;
+    
+    % Maximum simulation time
+    maxTime = params.maxTime;
+    
+    % Delete parameter file after loading
+    delete('simulation_parameters.mat');
+else
+    %% Default Simulation parameters
+    
+    % Time and time step
+    t = 0;
+    dt = 1.0;
+    
+    % The minimum distance at which a pair of UAVs may be without crashing into
+    % each other
+    uavCrashRadius = 15.0;
+    % The minimum distance apart at which all UAVs start
+    initialUavSpacing = 50.0;
+    
+    % The probability that a given UAV's battery life is not full, causing it
+    % to run out at a random point in the simulation
+    uavBatteryFailProb = 0.1;
+    
+    %% Drawing flags
+    
+    % Must be set true for anything to be drawn
+    drawAny = true;
+    % Draw the cloud
+    drawCloud = false;
+    % Draw the UAVs
+    drawUavs = true;
+    % Draw control info used by the AIs
+    drawAI = false;
+    % Draws the pheremones used by AIs - EXTREMELY performance intensive
+    drawAIExtra = false;
+    
+    % Default cloud data
+    cloudFile = 'cloud2.mat';
+    
+    % Number of UAVs
+    uavCount = 24;
+    
+    % UAVs have flight time of 30 mins only
+    maxTime = 1800.0;
+end
 
 %% Map data
 
-% load cloud data
-% load 'cloud1.mat'
-load 'cloud2.mat'
+% Load cloud data
+load(cloudFile);
 
 mapRect = [min(cloud.x),min(cloud.y);max(cloud.x),max(cloud.y)];
 
@@ -50,12 +94,6 @@ aiMapRect = [mapRect(1,1)+mapBorder(1), mapRect(1,2)+mapBorder(2); ...
              mapRect(2,1)-mapBorder(1), mapRect(2,2)-mapBorder(2)];
 
 %% UAV initial state
-
-% number of UAVs
-uavCount = 24;
-
-% UAVs have flight time of 30 mins only
-maxTime = 1800.0;
 
 % starting positions of UAVs
 startCirc = uavCount * initialUavSpacing;
