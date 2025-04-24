@@ -1,1 +1,24 @@
+# MATLAB temporary files
 *.asv
+*.m~
+*.mex*
+*.mlappinstall
+*.mltbx
+slprj/
+sccprj/
+
+# Simulation parameter file
+simulation_parameters.mat
+
+# Log files
+*.log
+
+# System Files
+.DS_Store
+Thumbs.db
+
+# IDE and Editor folders
+.idea/
+.vscode/
+*.swp
+*.swo
