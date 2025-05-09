@@ -1,9 +1,28 @@
 %% UAV Swarm Simulation Results Visualization
 % This script allows visualizing the results of a previously run simulation
 
-% Check if variables exist in workspace
+% Clear any existing figures
+close all;
+
+% Check if variables exist in workspace, if not try to load them
 if ~exist('uavBodies', 'var') || ~exist('uavBrains', 'var') || ~exist('cloud', 'var')
-    error('No simulation data found in workspace. Run sim_start.m first before using this script.');
+    try
+        if exist('simulation_results.mat', 'file')
+            fprintf('Loading simulation results...\n');
+            load('simulation_results.mat');
+            fprintf('Results loaded successfully.\n');
+        else
+            error('No simulation results found. Please run run_simulation.m first.');
+        end
+    catch e
+        fprintf('Error loading simulation results: %s\n', e.message);
+        return;
+    end
+end
+
+% Verify that we have all required data
+if ~exist('uavBodies', 'var') || ~exist('uavBrains', 'var') || ~exist('cloud', 'var')
+    error('Required simulation data is missing. Please run run_simulation.m again.');
 end
 
 % Extract data for visualization

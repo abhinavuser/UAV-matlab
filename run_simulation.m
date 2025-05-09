@@ -63,5 +63,15 @@ save('simulation_parameters.mat', 'uavCount', 'dt', 'maxTime', 'uavBatteryFailPr
     'initialUavSpacing', 'uavCrashRadius', 'drawAny', 'drawCloud', 'drawUavs', ...
     'drawAI', 'drawAIExtra', 'cloudFile');
 
-% Run the simulation
-sim_start 
+% Run the simulation and capture the output
+try
+    % Run the simulation and get the results
+    [uavBodies, uavBrains, cloud] = sim_start();
+    
+    % Save the simulation results
+    save('simulation_results.mat', 'uavBodies', 'uavBrains', 'cloud');
+    fprintf('\nSimulation completed successfully. Run visualize_results to see the analysis.\n');
+catch e
+    fprintf('\nError during simulation: %s\n', e.message);
+    return;
+end 

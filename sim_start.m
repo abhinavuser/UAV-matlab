@@ -1,4 +1,4 @@
-function sim_start
+function [uavBodies, uavBrains, cloud] = sim_start
 %
 % simulation example for use of cloud dispersion model
 %
